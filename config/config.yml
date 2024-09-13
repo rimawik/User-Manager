@@ -1,0 +1,10 @@
+app:
+  name: 'user-manager'
+  version: '1.0.0'
+
+http:
+  port: '8080'
+
+db:
+  driver_name: "postgres"
+  url: 'postgres://:@localhost:5432/users?sslmode=disable'
