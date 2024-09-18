@@ -9,4 +9,4 @@ run:
 swagger:
 	$(GOPATH)/bin/swag init -d cmd/app/,./routes/,./models/,./handlers/
 test:
-	go test ./tests/users_test.go
+	go test ./tests/

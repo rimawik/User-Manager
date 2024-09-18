@@ -13,6 +13,8 @@ import (
 	"github.com/user-manager/models"
 )
 
+var testApp *app.App
+
 func TestMain(m *testing.M) {
 
 	cfg, err := config.LoadTestConfig()
@@ -26,7 +28,7 @@ func TestMain(m *testing.M) {
 	}
 	logChannel := make(chan models.RequestLog)
 
-	testApp := app.BuildApp(cfg, postgresDB, logChannel)
+	testApp = app.BuildApp(cfg, postgresDB, logChannel)
 	// Setup test database
 	if err := setupTestDB(testApp); err != nil {
 		log.Fatalf("Error setting up test database: %v", err)

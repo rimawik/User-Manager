@@ -9,10 +9,6 @@ import (
 
 	"github.com/ditointernet/go-assert"
 	"github.com/gorilla/mux"
-	"github.com/sirupsen/logrus"
-	"github.com/user-manager/app"
-	"github.com/user-manager/config"
-	"github.com/user-manager/db"
 	"github.com/user-manager/handlers"
 	"github.com/user-manager/models"
 )
@@ -21,18 +17,17 @@ func TestAddUsers(t *testing.T) {
 	// Create a new router
 	r := mux.NewRouter()
 
-	cfg, err := config.LoadTestConfig()
+	// cfg, err := config.LoadTestConfig()
 
-	if err != nil {
-		logrus.Fatalf("couldn't load configuration: %v", err)
-	}
-	postgresDB, err := db.InitDB(*cfg)
-	if err != nil {
-		logrus.Fatalf("couldn't initialize db: %v", err)
-	}
+	// if err != nil {
+	// 	logrus.Fatalf("couldn't load configuration: %v", err)
+	// }
+	// postgresDB, err := db.InitDB(*cfg)
+	// if err != nil {
+	// 	logrus.Fatalf("couldn't initialize db: %v", err)
+	// }
 
-	logChannel := make(chan models.RequestLog)
-	testApp := app.BuildApp(cfg, postgresDB, logChannel)
+	//testApp := app.BuildApp(cfg, postgresDB, logChannel)
 
 	r.HandleFunc("/users", handlers.AddUsers(testApp)).Methods("POST")
 
@@ -67,67 +62,22 @@ func TestAddUsers(t *testing.T) {
 		userToBeAdded["name"])
 }
 
-func TestDeleteUsers(t *testing.T) {
-
-	//prepare db and configs
-	r := mux.NewRouter()
-
-	cfg, err := config.LoadTestConfig()
-
-	if err != nil {
-		logrus.Fatalf("couldn't load configuration: %v", err)
-	}
-	postgresDB, err := db.InitDB(*cfg)
-	if err != nil {
-		logrus.Fatalf("couldn't initialize db: %v", err)
-	}
-	logChannel := make(chan models.RequestLog)
-
-	testApp := app.BuildApp(cfg, postgresDB, logChannel)
-
-	//test case 1: user not found
-	r.HandleFunc("/users/{id}", handlers.DeleteUsers(testApp)).Methods("DELETE")
-
-	req, err := http.NewRequest("DELETE", "/users/1000", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
-	assert.Equal(t, http.StatusNotFound, rr.Code)
-
-	//test case 2: user successfully deleted
-	r.HandleFunc("/users/{id}", handlers.DeleteUsers(testApp)).Methods("DELETE")
-
-	req, err = http.NewRequest("DELETE", "/users/1", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	rr = httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
-
-	assert.Equal(t, http.StatusOK, rr.Code)
-
-}
-
 func TestGetUsers(t *testing.T) {
 
 	//prepare db and configs
 	r := mux.NewRouter()
 
-	cfg, err := config.LoadTestConfig()
+	// cfg, err := config.LoadTestConfig()
 
-	if err != nil {
-		logrus.Fatalf("couldn't load configuration: %v", err)
-	}
-	postgresDB, err := db.InitDB(*cfg)
-	if err != nil {
-		logrus.Fatalf("couldn't initialize db: %v", err)
-	}
+	// if err != nil {
+	// 	logrus.Fatalf("couldn't load configuration: %v", err)
+	// }
+	// postgresDB, err := db.InitDB(*cfg)
+	// if err != nil {
+	// 	logrus.Fatalf("couldn't initialize db: %v", err)
+	// }
 
-	logChannel := make(chan models.RequestLog)
-
-	testApp := app.BuildApp(cfg, postgresDB, logChannel)
+	// testApp := app.BuildApp(cfg, postgresDB, logChannel)
 
 	//test case 1: user not found
 	r.HandleFunc("/users/{id}", handlers.GetUsers(testApp)).Methods("GET")
@@ -157,6 +107,49 @@ func TestGetUsers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, user.ID, 2)
+	assert.Equal(t, user.ID, 1)
+
+}
+
+func TestDeleteUsers(t *testing.T) {
+
+	//prepare db and configs
+	r := mux.NewRouter()
+
+	// cfg, err := config.LoadTestConfig()
+
+	// if err != nil {
+	// 	logrus.Fatalf("couldn't load configuration: %v", err)
+	// }
+	// postgresDB, err := db.InitDB(*cfg)
+	// if err != nil {
+	// 	logrus.Fatalf("couldn't initialize db: %v", err)
+	// }
+	// logChannel := make(chan models.RequestLog)
+
+	// testApp := app.BuildApp(cfg, postgresDB, logChannel)
+
+	//test case 1: user not found
+	r.HandleFunc("/users/{id}", handlers.DeleteUsers(testApp)).Methods("DELETE")
+
+	req, err := http.NewRequest("DELETE", "/users/1000", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	r.ServeHTTP(rr, req)
+	assert.Equal(t, http.StatusNotFound, rr.Code)
+
+	//test case 2: user successfully deleted
+	r.HandleFunc("/users/{id}", handlers.DeleteUsers(testApp)).Methods("DELETE")
+
+	req, err = http.NewRequest("DELETE", "/users/1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr = httptest.NewRecorder()
+	r.ServeHTTP(rr, req)
+
+	assert.Equal(t, http.StatusOK, rr.Code)
 
 }
